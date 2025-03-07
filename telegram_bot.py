@@ -180,7 +180,11 @@ async def process_items():
     # for each keyword we parse data
     for query in all_queries:
         already_processed = query[1]
-        data = vinted.items.search(query[0])
+        ## add try -> data = vinted.items.search(query[0])
+        try:
+            data = vinted.items.search(query[0])
+        except requests.exceptions.HTTPError as e:
+            print(f"Errore HTTP: {e.response.status_code}, Dettagli: {e.response.text}")
         await items_queue.put((data, already_processed, query[0]))
         # Update processed value to start notifying
         db.update_query_processed(query[0])
