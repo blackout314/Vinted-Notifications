@@ -185,6 +185,8 @@ async def process_items():
             data = vinted.items.search(query[0])
         except requests.exceptions.HTTPError as e:
             print(f"Errore HTTP: {e.response.status_code}, Dettagli: {e.response.text}")
+            continue
+
         await items_queue.put((data, already_processed, query[0]))
         # Update processed value to start notifying
         db.update_query_processed(query[0])
